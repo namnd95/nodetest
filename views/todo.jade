@@ -1,0 +1,78 @@
+doctype html
+
+html(lang='en', data-framework='angularjs')
+	head
+		meta(charset='utf-8')
+		title= title
+		link(rel='stylesheet', href='/node_modules/todomvc-common/base.css')
+		link(rel='stylesheet', href='/node_modules/todomvc-app-css/index.css')
+		style
+			[ng-cloak] { display: none; }
+	body(ng-app='todomvc')
+		ng-view
+
+		script(type='text/ng-template', id='todomvc-index.html')
+			section#todoapp
+				header#header
+					h1
+						todos
+					form(id='todo-form', ng-submit='addTodo()')
+						input(id='new-todo',placeholder='What needs to be done?',ng-model='newTodo',ng-disabled='saving',autofocus)
+				
+				
+				section(id='main',ng-show='todos.length',ng-cloak)
+					input(id='toggle-all',type='checkbox',ng-model='allChecked',ng-click='markAll(allChecked)')
+					label(for='toggle-all').
+						Mark all as complete
+					ul#todo-list
+						li(ng-repeat='todo in todos | filter:statusFilter track by $index',ng-class='{completed: todo.completed, editing: todo == editedTodo}')
+							.view
+								input(class='toggle',type='checkbox',ng-model='todo.completed',ng-change='toggleCompleted(todo)')
+								label(ng-dblclick='editTodo(todo)').
+									{{todo.title}}
+								button(class='destroy',ng-click='removeTodo(todo)')
+							form(ng-submit="saveEdits(todo, 'submit')")
+								input(class='edit',ng-trim='false',ng-model='todo.title',todo-escape='revertEdits(todo)',ng-blur="saveEdits(todo, 'blur')",todo-focus='todo == editedTodo')
+								
+				footer(id='footer',ng-show='todos.length',ng-cloak)
+					span#todo-count
+						strong.
+							{{remainingCount}}
+						ng-pluralize(count='remainingCount',when="{ one: 'item left', other: 'items left' }")
+					
+					ul#filters
+						li
+							a(ng-class="{selected: status == ''}",href='#/').
+								All						
+						li
+							a(ng-class="{selected: status == 'active'}",href='#/active').
+								Active
+						li						
+							a(ng-class="{selected: status == 'completed'}",href='#/completed').
+								Completed						
+					button(id='clear-completed',ng-click='clearCompletedTodos()',ng-show='completedCount').
+						Clear completed
+							
+			footer#info
+				p.Double-click to edit a todo
+				p.
+					Credits:
+					<a href='http://twitter.com/cburgdorf'>Christoph Burgdorf</a>,
+					<a href='http://ericbidelman.com'>Eric Bidelman</a>,
+					<a href='http://jacobmumm.com'>Jacob Mumm</a> and
+					<a href='http://blog.igorminar.com'>Igor Minar</a>				
+				p.
+					Part of <a href='http://todomvc.com'>TodoMVC</a></p>			
+
+
+
+
+		script( src='/node_modules/todomvc-common/base.js')
+		script( src='/node_modules/angular/angular.js')
+		script( src='/node_modules/angular-route/angular-route.js')
+		script( src='/node_modules/angular-resource/angular-resource.js')
+		script( src='/js/app.js')
+		script( src='/js/controllers/todoCtrl.js')
+		script( src='/js/services/todoStorage.js')
+		script( src='/js/directives/todoFocus.js')
+		script(src='/js/directives/todoEscape.js')

@@ -6,6 +6,82 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/todo', function(req, res, next) {
+  res.render('todo', { title: 'todos' });
+});
+
+router.get('/todo/api', function(req, res, next) {
+  res.json('[]');
+});
+
+router.get('/todo/api/todos', function(req, res, next) {  
+ //Disable caching for content files
+  res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.header("Pragma", "no-cache");
+  res.header("Expires", 0);
+
+  var db = req.db;
+  var collection = db.get('todolist');  
+  collection.find({},{},function(e,docs){
+      console.log(docs);
+      res.json(docs);
+  });
+});
+
+router.post('/todo/api/todos', function(req, res) {
+    var db = req.db;
+    var collection = db.get('todolist');
+	console.log(req.body);
+    collection.insert(req.body, function(err, result){
+		console.log(result);
+        res.send(
+            (err === null) ? { msg: '', id:result._id } : { msg: err }
+        );
+    });
+});
+
+router.put('/todo/api/todos', function(req, res) {
+    var db = req.db;
+    var collection = db.get('todolist');
+	
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+    });
+});
+
+router.delete('/todo/api/todos', function(req, res) {
+    var db = req.db;
+    var collection = db.get('todolist');
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+    });
+});
+
+
+router.post('/todo/update', function(req, res) {
+    var db = req.db;
+    var collection = db.get('userlist');
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+    });
+});
+
+router.post('/todo/remove', function(req, res) {
+    var db = req.db;
+    var collection = db.get('userlist');
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+    });
+});
+
 /* GET Hello World page. */
 router.get('/helloworld', function(req, res) {
     res.render('helloworld', { title: 'Hello, World!' });
@@ -21,6 +97,8 @@ router.get('/userlist', function(req, res) {
         });
     });
 });
+
+
 
 /* GET New User page. */
 router.get('/newuser', function(req, res) {
