@@ -22,64 +22,40 @@ router.get('/todo/api/todos', function(req, res, next) {
 
   var db = req.db;
   var collection = db.get('todolist');  
-  collection.find({},{},function(e,docs){
-      console.log(docs);
+  collection.find({},{},function(e,docs){      
       res.json(docs);
   });
 });
 
 router.post('/todo/api/todos', function(req, res) {
     var db = req.db;
-    var collection = db.get('todolist');
-	console.log(req.body);
-    collection.insert(req.body, function(err, result){
-		console.log(result);
+    var collection = db.get('todolist');	
+    collection.insert(req.body, function(err, result){		
         res.send(
             (err === null) ? { msg: '', id:result._id } : { msg: err }
         );
     });
 });
 
-router.put('/todo/api/todos', function(req, res) {
+router.put('/todo/api/todos/:id', function(req, res) {
     var db = req.db;
-    var collection = db.get('todolist');
-	
-    collection.insert(req.body, function(err, result){
-        res.send(
-            (err === null) ? { msg: '' } : { msg: err }
-        );
-    });
+    var collection = db.get('todolist');	
+	collection.update({_id: req.params.id }, req.body);
+    res.json('');
 });
 
-router.delete('/todo/api/todos', function(req, res) {
+router.delete('/todo/api/todos', function(req, res) {	
     var db = req.db;
-    var collection = db.get('todolist');
-    collection.insert(req.body, function(err, result){
-        res.send(
-            (err === null) ? { msg: '' } : { msg: err }
-        );
-    });
+    var collection = db.get('todolist');    
+	collection.remove( {completed: true });
+	res.json('');
 });
 
-
-router.post('/todo/update', function(req, res) {
+router.delete('/todo/api/todos/:id', function(req, res) {	
     var db = req.db;
-    var collection = db.get('userlist');
-    collection.insert(req.body, function(err, result){
-        res.send(
-            (err === null) ? { msg: '' } : { msg: err }
-        );
-    });
-});
-
-router.post('/todo/remove', function(req, res) {
-    var db = req.db;
-    var collection = db.get('userlist');
-    collection.insert(req.body, function(err, result){
-        res.send(
-            (err === null) ? { msg: '' } : { msg: err }
-        );
-    });
+    var collection = db.get('todolist');    
+	collection.remove( {_id: req.params.id });
+	res.json('');
 });
 
 /* GET Hello World page. */

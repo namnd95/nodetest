@@ -52,38 +52,33 @@ angular.module('todomvc')
 				var originalTodos = store.todos.slice(0);
 
 				store.todos.splice(store.todos.indexOf(todo), 1);
-				return store.api.delete({ id: todo.id },
+				return store.api.delete({ id: todo._id },
 					function () {
 					}, function error() {
 						angular.copy(originalTodos, store.todos);
 					});
 			},
 
-			get: function () {
-				console.log('def');
-				return store.api.query(function (resp) {
-					console.log(resp);
+			get: function () {				
+				return store.api.query(function (resp) {					
 					angular.copy(resp, store.todos);
 				});
 			},
 
 			insert: function (todo) {
-				var originalTodos = store.todos.slice(0);
-				console.log(todo);
+				var originalTodos = store.todos.slice(0);				
 				return store.api.save(todo,
-					function success(resp) {
-						console.log('s');
-						todo.id = resp.id;
+					function success(resp) {						
+						todo._id = resp.id;
 						store.todos.push(todo);
 					}, function error() {
-						angular.copy(originalTodos, store.todos);
-						console.log('f');
+						angular.copy(originalTodos, store.todos);						
 					})
 					.$promise;
 			},
 
 			put: function (todo) {
-				return store.api.update({ id: todo.id }, todo)
+				return store.api.update({ id: todo._id }, todo)
 					.$promise;
 			}
 		};
@@ -123,8 +118,7 @@ angular.module('todomvc')
 			},
 
 			delete: function (todo) {
-				var deferred = $q.defer();
-				console.log(todo);
+				var deferred = $q.defer();				
 				store.todos.splice(store.todos.indexOf(todo), 1);
 
 				store._saveToLocalStorage(store.todos);
